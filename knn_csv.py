@@ -16,7 +16,7 @@ testing_file_path = "E:\\Python\\OCR Project\\template"
 model_path = "knn_combined_model_csv.pkl"
 
 # ---------------------- Combine All CSVs -------------------------------
-print("📂 Loading and combining all CSV files...\n")
+print(" Loading and combining all CSV files...\n")
 all_dataframes = []
 
 for csv_file in os.listdir(csv_folder_path):
@@ -24,14 +24,14 @@ for csv_file in os.listdir(csv_folder_path):
         csv_path = os.path.join(csv_folder_path, csv_file)
         df = pd.read_csv(csv_path, dtype={'Label': str})
         all_dataframes.append(df)
-        print(f"✅ Loaded '{csv_file}'")
+        print(f" Loaded '{csv_file}'")
 
 if not all_dataframes:
-    print("❌ No CSV files found. Exiting.")
+    print(" No CSV files found. Exiting.")
     exit()
 
 combined_df = pd.concat(all_dataframes, ignore_index=True)
-print(f"\n📊 Total samples combined: {len(combined_df)}")
+print(f"\n Total samples combined: {len(combined_df)}")
 
 training_labels = combined_df['Label'].values
 training_features = combined_df.drop(columns=['Label']).values
@@ -42,17 +42,17 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # ---------------------- Train Model -------------------------------
-print("\n🧠 Training combined model...\n")
+print("\n Training combined model...\n")
 knn = KNeighborsClassifier(n_neighbors=3)
 model = knn.fit(X_train, y_train)
-print("✅ Model trained.")
+print(" Model trained.")
 
 # ---------------------- Save Model -------------------------------
 joblib.dump(model, model_path)
-print(f"💾 Model saved as '{model_path}'")
+print(f" Model saved as '{model_path}'")
 
 # ---------------------- Predict from Test Images -------------------------------
-print("\n📷 Predicting from test images...\n")
+print("\n Predicting from test images...\n")
 predicted_labels = []
 true_labels = []
 
@@ -65,7 +65,7 @@ for root, _, files in os.walk(testing_file_path):
         img = cv2.imread(file_full_path)
 
         if img is None:
-            print(f"❌ Failed to load image: {file_full_path}")
+            print(f" Failed to load image: {file_full_path}")
             continue
 
         # Image Preprocessing
@@ -93,12 +93,12 @@ if predicted_labels and true_labels:
     recall = recall_score(true_labels, predicted_labels, average='macro', zero_division=0)
     f1 = f1_score(true_labels, predicted_labels, average='macro', zero_division=0)
 
-    print("\n🔍 Metrics:")
-    print(f"✅ Accuracy : {accuracy * 100:.2f}%")
-    print(f"🎯 Precision: {precision * 100:.2f}%")
-    print(f"📈 Recall   : {recall * 100:.2f}%")
-    print(f"🏅 F1 Score : {f1 * 100:.2f}%")
+    print("\n Metrics:")
+    print(f" Accuracy : {accuracy * 100:.2f}%")
+    print(f" Precision: {precision * 100:.2f}%")
+    print(f" Recall   : {recall * 100:.2f}%")
+    print(f" F1 Score : {f1 * 100:.2f}%")
 else:
-    print("\n⚠️ No valid test images found to evaluate accuracy.")
+    print("\n No valid test images found to evaluate accuracy.")
 
 cv2.destroyAllWindows()
